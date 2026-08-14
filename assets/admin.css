@@ -19,7 +19,7 @@ body.dizzy-schedule-admin-page div[id*="notice"] { display:none!important; }
 .dizzy-month-grid{display:grid;grid-template-columns:repeat(7,minmax(145px,1fr));min-width:1015px}
 .dizzy-grid-head,.dizzy-employee-cell,.dizzy-schedule-slot,.dizzy-month-day{border-right:1px solid #dcdcde;border-bottom:1px solid #dcdcde;background:#fff}
 .dizzy-grid-head{padding:12px 8px;color:#7b8593;text-align:center;font-size:12px;font-weight:600}
-.dizzy-employee-cell{display:flex;align-items:center;gap:10px;min-height:46px;padding:7px 10px;font-weight:600}
+.dizzy-employee-cell{display:flex;align-items:center;gap:10px;min-height:58px;padding:7px 10px;font-weight:600}
 .dizzy-employee-cell img{width:36px;height:36px;flex:0 0 36px;border-radius:50%;object-fit:cover}
 .dizzy-employee-cell>span{display:flex;min-width:0;flex-direction:column;justify-content:center}
 .dizzy-employee-cell strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
