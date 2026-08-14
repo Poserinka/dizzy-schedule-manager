@@ -12,6 +12,7 @@ defined('ABSPATH') || exit;
 final class SettingsPage
 {
     public const SLUG = 'dizzy-schedule-settings';
+    private string $pageHook = '';
 
     public function __construct(private PositionSettings $positions)
     {
@@ -20,19 +21,34 @@ final class SettingsPage
     public function register(): void
     {
         add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_enqueue_scripts', [$this, 'assets']);
         add_action('admin_post_dizzy_schedule_add_position', [$this, 'add']);
         add_action('admin_post_dizzy_schedule_delete_position', [$this, 'delete']);
     }
 
     public function menu(): void
     {
-        add_submenu_page(
+        $this->pageHook = (string) add_submenu_page(
             SchedulePage::SLUG,
             __('Schedule Settings', 'dizzy-schedule-manager'),
             __('Settings', 'dizzy-schedule-manager'),
             EmployeeRole::MANAGE_CAP,
             self::SLUG,
             [$this, 'render']
+        );
+    }
+
+    public function assets(string $hook): void
+    {
+        if ($hook !== $this->pageHook) {
+            return;
+        }
+
+        wp_enqueue_style(
+            'dizzy-schedule-admin',
+            DIZZY_SCHEDULE_URL . 'assets/admin.css',
+            [],
+            DIZZY_SCHEDULE_VERSION
         );
     }
 
