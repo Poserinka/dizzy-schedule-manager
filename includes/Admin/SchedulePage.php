@@ -118,6 +118,10 @@ final class SchedulePage
             'employees' => array_map(static fn (object $user): array => [
                 'id' => (int) $user->ID,
                 'name' => (string) $user->display_name,
+                'avatar' => (string) get_avatar_url((int) $user->ID, [
+                    'size' => 72,
+                    'default' => 'mystery',
+                ]),
             ], $employees),
             'strings' => [
                 'loading' => __('Loading schedule…', 'dizzy-schedule-manager'),
