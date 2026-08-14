@@ -1,0 +1,28 @@
+body.dizzy-schedule-admin-page .notice,
+body.dizzy-schedule-admin-page .update-nag,
+body.dizzy-schedule-admin-page .updated,
+body.dizzy-schedule-admin-page .error,
+body.dizzy-schedule-admin-page div[class*="notice"],
+body.dizzy-schedule-admin-page div[id*="notice"] {
+    display: none !important;
+}
+
+.dizzy-schedule-wrap { margin: 20px 20px 0 0; }
+.dizzy-schedule-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    padding: 22px 24px; color: #f5f7fb; background: #171b22;
+}
+.dizzy-schedule-header h1 { margin: 0; color: inherit; font-size: 24px; }
+.dizzy-schedule-header p { margin: 5px 0 0; color: #aeb6c4; }
+.dizzy-schedule-user { padding: 8px 12px; border: 1px solid #3a424e; border-radius: 3px; }
+.dizzy-schedule-empty {
+    max-width: 720px; margin: 32px auto; padding: 60px 30px; text-align: center;
+    background: #fff; border: 1px solid #dcdcde;
+}
+.dizzy-schedule-empty .dashicons { width: 52px; height: 52px; color: #3157e5; font-size: 52px; }
+.dizzy-schedule-empty h2 { margin-top: 20px; }
+.dizzy-schedule-empty p { max-width: 520px; margin: 0 auto; color: #646970; font-size: 14px; }
+@media screen and (max-width: 782px) {
+    .dizzy-schedule-wrap { margin-right: 10px; }
+    .dizzy-schedule-header { align-items: flex-start; flex-direction: column; }
+}
