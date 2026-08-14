@@ -34,3 +34,10 @@ body.dizzy-schedule-admin-page div[id*="notice"] { display:none!important; }
 .dizzy-schedule-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .dizzy-schedule-dialog-actions{display:grid;grid-template-columns:auto 1fr auto auto;gap:9px;align-items:center;margin-top:6px}
 @media(max-width:782px){.dizzy-schedule-wrap{margin-right:10px}.dizzy-schedule-header{align-items:flex-start;flex-direction:column}.dizzy-schedule-toolbar{align-items:flex-start;flex-wrap:wrap;padding:12px}.dizzy-schedule-form-row{grid-template-columns:1fr}}
+
+.dizzy-schedule-settings{max-width:900px}
+.dizzy-schedule-settings-panel{margin-top:20px;padding:24px;background:#fff;border:1px solid #dcdcde}
+.dizzy-position-add{display:grid;grid-template-columns:120px minmax(220px,1fr) auto;gap:10px;align-items:center;margin:20px 0}
+.dizzy-position-delete{text-align:right}
+.dizzy-schedule-settings-message{margin-top:16px;padding:12px 15px;border-left:4px solid #00a32a;background:#fff}
+@media(max-width:782px){.dizzy-position-add{grid-template-columns:1fr}}
