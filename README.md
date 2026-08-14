@@ -1,0 +1,1 @@
+# dizzy-schedule-manager
