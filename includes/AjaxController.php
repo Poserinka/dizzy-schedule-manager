@@ -52,6 +52,12 @@ final class AjaxController
         $start = $this->timeParam('start_time');
         $end = $this->timeParam('end_time');
 
+        if ($end === $start) {
+            wp_send_json_error([
+                'message' => __('Start and end time cannot be the same.', 'dizzy-schedule-manager'),
+            ], 400);
+        }
+
         if ($employeeId <= 0 || ! in_array(EmployeeRole::ROLE, (array) get_userdata($employeeId)?->roles, true)) {
             wp_send_json_error(['message' => __('Please select a valid Employee user.', 'dizzy-schedule-manager')], 400);
         }
@@ -77,7 +83,7 @@ final class AjaxController
                 'shift_date' => $date,
                 'start_time' => $start,
                 'end_time' => $end,
-                'break_minutes' => min(480, absint($_POST['break_minutes'] ?? 0)),
+                'break_minutes' => 0,
                 'position' => $position,
                 'notes' => wp_unslash((string) ($_POST['notes'] ?? '')),
             ]);
@@ -134,8 +140,10 @@ final class AjaxController
     {
         $value = sanitize_text_field(wp_unslash((string) ($_POST[$key] ?? '')));
 
-        if (preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d$/', $value) !== 1) {
-            wp_send_json_error(['message' => __('Invalid time.', 'dizzy-schedule-manager')], 400);
+        if (preg_match('/^(?:(?:1[6-9]|2[0-3]|0[01]):(?:00|30)|02:00)$/', $value) !== 1) {
+            wp_send_json_error([
+                'message' => __('Time must be between 16:00 and 02:00 in 30-minute steps.', 'dizzy-schedule-manager'),
+            ], 400);
         }
 
         return $value . ':00';
