@@ -11,8 +11,10 @@ defined('ABSPATH') || exit;
 
 final class AjaxController
 {
-    public function __construct(private ShiftRepository $repository)
-    {
+    public function __construct(
+        private ShiftRepository $repository,
+        private PositionSettings $positions
+    ) {
     }
 
     public function register(): void
@@ -58,6 +60,12 @@ final class AjaxController
             wp_send_json_error(['message' => __('End time must be later than start time.', 'dizzy-schedule-manager')], 400);
         }
 
+        $position = sanitize_text_field(wp_unslash((string) ($_POST['position'] ?? '')));
+
+        if (! $this->positions->contains($position)) {
+            wp_send_json_error(['message' => __('Please select a valid employee role.', 'dizzy-schedule-manager')], 400);
+        }
+
         try {
             $savedId = $this->repository->save([
                 'id' => $id,
@@ -66,7 +74,7 @@ final class AjaxController
                 'start_time' => $start,
                 'end_time' => $end,
                 'break_minutes' => min(480, absint($_POST['break_minutes'] ?? 0)),
-                'position' => wp_unslash((string) ($_POST['position'] ?? '')),
+                'position' => $position,
                 'notes' => wp_unslash((string) ($_POST['notes'] ?? '')),
             ]);
             wp_send_json_success(['id' => $savedId]);
