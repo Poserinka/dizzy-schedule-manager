@@ -56,8 +56,12 @@ final class AjaxController
             wp_send_json_error(['message' => __('Please select a valid Employee user.', 'dizzy-schedule-manager')], 400);
         }
 
-        if ($end <= $start) {
-            wp_send_json_error(['message' => __('End time must be later than start time.', 'dizzy-schedule-manager')], 400);
+        $crossesMidnight = $end <= $start;
+
+        if ($crossesMidnight && ($start < '16:00:00' || $end > '02:00:00')) {
+            wp_send_json_error([
+                'message' => __('Overnight shifts must end no later than 02:00.', 'dizzy-schedule-manager'),
+            ], 400);
         }
 
         $position = sanitize_text_field(wp_unslash((string) ($_POST['position'] ?? '')));
