@@ -25,13 +25,15 @@ require_once DIZZY_SCHEDULE_PATH . 'includes/GitHubUpdater.php';
 
 register_activation_hook(__FILE__, [\Dizzy\Schedule\EmployeeRole::class, 'activate']);
 
-add_action('plugins_loaded', static function (): void {
+add_action('init', static function (): void {
     load_plugin_textdomain(
         'dizzy-schedule-manager',
         false,
         dirname(plugin_basename(DIZZY_SCHEDULE_FILE)) . '/languages'
     );
+}, 5);
 
+add_action('plugins_loaded', static function (): void {
     $role = new \Dizzy\Schedule\EmployeeRole();
     $role->register();
 
