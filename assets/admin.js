@@ -126,20 +126,24 @@
         const grid = document.createElement('div');
         grid.className = 'dizzy-day-grid';
         grid.appendChild(cell('Employee', 'dizzy-grid-head'));
-        for (let hour = 16; hour <= 23; hour++) grid.appendChild(cell(pad(hour) + ':00', 'dizzy-grid-head'));
+        const businessHours = [16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2];
+        businessHours.forEach(hour => grid.appendChild(cell(pad(hour) + ':00', 'dizzy-grid-head')));
 
         employees.forEach(employee => {
             grid.appendChild(cell(employee.name, 'dizzy-employee-cell'));
-            for (let hour = 16; hour <= 23; hour++) {
+            businessHours.forEach(hour => {
                 const slot = cell('', 'dizzy-schedule-slot');
                 const dateValue = iso(date);
                 slot.dataset.date = dateValue;
                 slot.dataset.employeeId = employee.id;
                 const matches = shifts.filter(s => Number(s.employee_id) === Number(employee.id) && s.shift_date === dateValue && Number(s.start_time.slice(0, 2)) === hour);
                 matches.forEach(s => slot.appendChild(shiftButton(s)));
-                if (config.canManage) slot.addEventListener('click', () => openModal({employee_id: employee.id, shift_date: dateValue, start_time: pad(hour) + ':00', end_time: pad(Math.min(hour + 5, 23)) + ':00'}));
+                if (config.canManage && hour !== 2) {
+                    const endHour = hour >= 21 || hour <= 1 ? 2 : (hour + 5) % 24;
+                    slot.addEventListener('click', () => openModal({employee_id: employee.id, shift_date: dateValue, start_time: pad(hour) + ':00', end_time: pad(endHour) + ':00'}));
+                }
                 grid.appendChild(slot);
-            }
+            });
         });
         showEmpty(employees.length);
         calendar.appendChild(grid);
@@ -184,7 +188,10 @@
         const minutes = rows.reduce((sum, item) => {
             const start = item.start_time.split(':').map(Number);
             const end = item.end_time.split(':').map(Number);
-            return sum + (end[0] * 60 + end[1]) - (start[0] * 60 + start[1]) - Number(item.break_minutes || 0);
+            const startMinutes = start[0] * 60 + start[1];
+            let endMinutes = end[0] * 60 + end[1];
+            if (endMinutes <= startMinutes) endMinutes += 24 * 60;
+            return sum + endMinutes - startMinutes - Number(item.break_minutes || 0);
         }, 0);
         return Math.max(0, minutes / 60).toFixed(minutes % 60 ? 1 : 0);
     }
@@ -197,7 +204,7 @@
         form.elements.employee_id.value = shift.employee_id || config.employees[0]?.id || '';
         form.elements.shift_date.value = shift.shift_date || iso(cursor);
         form.elements.start_time.value = shift.start_time || '18:00';
-        form.elements.end_time.value = shift.end_time || '23:00';
+        form.elements.end_time.value = shift.end_time || '02:00';
         form.elements.break_minutes.value = shift.break_minutes || 0;
         form.elements.position.value = shift.position || form.elements.position.options[0]?.value || '';
         form.elements.notes.value = shift.notes || '';
