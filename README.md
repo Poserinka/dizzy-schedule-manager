@@ -2,13 +2,19 @@
 
 Private employee schedules and shift planning for WordPress.
 
-## Phase 1
+## Version 2.0
 
 - Adds an **Employee** WordPress user role.
-- Adds a protected **Schedule** admin page.
-- Employee users can only access the Schedule workspace.
-- WordPress and third-party admin notices are suppressed on that page.
-- Administrators retain full access and receive schedule management capabilities.
+- Provides protected **Schedule** admin access with third-party notices suppressed.
+- Day, week and month calendar views.
+- Full Schedule and My Schedule scopes.
+- AJAX shift creation, editing and deletion without page reloads.
+- Empty calendar cells open a pre-filled Add Shift dialog.
+- Existing shifts open the Edit Shift dialog.
+- Employee, date, start/end time, break, position and notes fields.
+- Overlapping shifts for the same employee are rejected.
+- Employee users can only view their own schedule.
+- Administrators can manage all Employee schedules.
 - Includes the standard GitHub Releases update integration.
 
 ## Roles and capabilities
@@ -21,5 +27,3 @@ Private employee schedules and shift planning for WordPress.
 
 - WordPress 6.7+
 - PHP 8.2+
-
-Calendar day/week/month views and shift management will be added in Phase 2.
