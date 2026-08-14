@@ -45,3 +45,23 @@ body.dizzy-schedule-admin-page div[id*="notice"] { display:none!important; }
 .dizzy-position-delete{text-align:right}
 .dizzy-schedule-settings-message{margin-top:16px;padding:12px 15px;border-left:4px solid #00a32a;background:#fff}
 @media(max-width:782px){.dizzy-position-add{grid-template-columns:1fr}}
+
+
+.dizzy-schedule-reports{margin:20px 20px 0 0}
+.dizzy-reports-heading{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;color:#f5f7fb;background:#171b22}
+.dizzy-reports-heading h1{margin:0;color:inherit;font-size:24px}
+.dizzy-reports-heading p{margin:4px 0 0;color:#aeb6c4}
+.dizzy-reports-toolbar{display:flex;align-items:center;gap:8px;min-height:58px;padding:0 16px;background:#fff;border-bottom:1px solid #dcdcde}
+.dizzy-reports-toolbar form{display:flex;align-items:center;gap:8px;margin:0}
+.dizzy-reports-toolbar select{min-width:110px}
+.dizzy-reports-toolbar strong{margin:0 10px;color:#2271b1;font-size:17px}
+.dizzy-reports-table-wrap{overflow-x:auto;margin-top:20px}
+.dizzy-reports-table{min-width:760px;border-collapse:collapse}
+.dizzy-reports-table th,.dizzy-reports-table td{padding:12px 14px;vertical-align:middle}
+.dizzy-reports-table thead th{color:#657184;background:#edf0f3;text-transform:uppercase;font-size:11px}
+.dizzy-reports-table tbody td{height:46px}
+.dizzy-reports-table tfoot th{background:#edf0f3;font-weight:700}
+.dizzy-report-employee{display:flex;align-items:center;gap:10px}
+.dizzy-report-employee img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+.dizzy-reports-empty{text-align:center;color:#646970}
+@media(max-width:782px){.dizzy-schedule-reports{margin-right:10px}.dizzy-reports-toolbar{align-items:flex-start;flex-wrap:wrap;padding:12px}.dizzy-reports-toolbar form{flex-wrap:wrap}}
