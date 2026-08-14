@@ -151,6 +151,13 @@ final class SchedulePage
         }
 
         $canManage = current_user_can(EmployeeRole::MANAGE_CAP);
+        $shiftTimes = [];
+
+        for ($minutes = 16 * 60; $minutes <= 26 * 60; $minutes += 30) {
+            $hour = intdiv($minutes, 60) % 24;
+            $minute = $minutes % 60;
+            $shiftTimes[] = sprintf('%02d:%02d', $hour, $minute);
+        }
         ?>
         <div class="wrap dizzy-schedule-wrap" id="dizzy-schedule-app">
             <header class="dizzy-schedule-header">
@@ -208,17 +215,23 @@ final class SchedulePage
                                 <input type="date" name="shift_date" required>
                             </label>
                             <div class="dizzy-schedule-form-row">
-                                <label><span><?php esc_html_e('Start', 'dizzy-schedule-manager'); ?></span><input type="time" name="start_time" step="1800" required></label>
-                                <label><span><?php esc_html_e('End', 'dizzy-schedule-manager'); ?></span><input type="time" name="end_time" step="1800" required></label>
+                                <label>
+                                    <span><?php esc_html_e('Start', 'dizzy-schedule-manager'); ?></span>
+                                    <select name="start_time" required>
+                                        <?php foreach ($shiftTimes as $time) : ?>
+                                            <option value="<?php echo esc_attr($time); ?>"><?php echo esc_html($time); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </label>
+                                <label>
+                                    <span><?php esc_html_e('End', 'dizzy-schedule-manager'); ?></span>
+                                    <select name="end_time" required>
+                                        <?php foreach ($shiftTimes as $time) : ?>
+                                            <option value="<?php echo esc_attr($time); ?>"><?php echo esc_html($time); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </label>
                             </div>
-                            <label>
-                                <span><?php esc_html_e('Break', 'dizzy-schedule-manager'); ?></span>
-                                <select name="break_minutes">
-                                    <option value="0"><?php esc_html_e('No break', 'dizzy-schedule-manager'); ?></option>
-                                    <option value="15">15 min</option><option value="30">30 min</option>
-                                    <option value="45">45 min</option><option value="60">60 min</option>
-                                </select>
-                            </label>
                             <label>
                                 <span><?php esc_html_e('Position', 'dizzy-schedule-manager'); ?></span>
                                 <select name="position" required>
