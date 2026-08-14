@@ -3,7 +3,7 @@
  * Plugin Name: Dizzy Schedule Manager
  * Plugin URI: https://github.com/Poserinka/dizzy-schedule-manager
  * Description: Private employee schedules and shift planning for WordPress.
- * Version: 2.1.3
+ * Version: 2.1.4
  * Author: Poserinka Design
  * Text Domain: dizzy-schedule-manager
  * Requires PHP: 8.2
@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 defined('ABSPATH') || exit;
 
-define('DIZZY_SCHEDULE_VERSION', '2.1.3');
+define('DIZZY_SCHEDULE_VERSION', '2.1.4');
 define('DIZZY_SCHEDULE_FILE', __FILE__);
 define('DIZZY_SCHEDULE_PATH', plugin_dir_path(__FILE__));
 define('DIZZY_SCHEDULE_URL', plugin_dir_url(__FILE__));
