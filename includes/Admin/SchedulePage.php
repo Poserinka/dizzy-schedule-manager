@@ -113,7 +113,7 @@ final class SchedulePage
             'canManage' => current_user_can(EmployeeRole::MANAGE_CAP),
             'currentUserId' => get_current_user_id(),
             'today' => current_time('Y-m-d'),
-            'employees' => array_map(static fn (\WP_User $user): array => [
+            'employees' => array_map(static fn (object $user): array => [
                 'id' => (int) $user->ID,
                 'name' => (string) $user->display_name,
             ], $employees),
