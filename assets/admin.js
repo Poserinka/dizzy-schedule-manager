@@ -13,7 +13,7 @@
     const form = app.querySelector('[data-shift-form]');
     let view = 'week';
     let scope = config.canManage ? 'full' : 'mine';
-    let cursor = parseDate(config.today);
+    let cursor;
     let shifts = [];
 
     const pad = value => String(value).padStart(2, '0');
@@ -22,6 +22,8 @@
         const parts = String(value).split('-').map(Number);
         return new Date(parts[0], parts[1] - 1, parts[2], 12);
     };
+    cursor = parseDate(config.today);
+
     const addDays = (date, days) => {
         const next = new Date(date);
         next.setDate(next.getDate() + days);
@@ -174,8 +176,8 @@
         return element;
     }
 
-    function showEmpty(employeeCount) {
-        if (!employeeCount) feedback.textContent = config.strings.empty;
+    function showEmpty() {
+        if (!shifts.length) feedback.textContent = config.strings.empty;
     }
 
     function totalHours(rows) {
