@@ -98,6 +98,34 @@ final class SchedulePage
         }
 
         wp_enqueue_style('dizzy-schedule-admin', DIZZY_SCHEDULE_URL . 'assets/admin.css', [], DIZZY_SCHEDULE_VERSION);
+        wp_enqueue_script('dizzy-schedule-admin', DIZZY_SCHEDULE_URL . 'assets/admin.js', [], DIZZY_SCHEDULE_VERSION, true);
+
+        $employees = get_users([
+            'role' => EmployeeRole::ROLE,
+            'orderby' => 'display_name',
+            'order' => 'ASC',
+            'fields' => ['ID', 'display_name'],
+        ]);
+
+        wp_localize_script('dizzy-schedule-admin', 'dizzySchedule', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('dizzy_schedule_admin'),
+            'canManage' => current_user_can(EmployeeRole::MANAGE_CAP),
+            'currentUserId' => get_current_user_id(),
+            'today' => current_time('Y-m-d'),
+            'employees' => array_map(static fn (\WP_User $user): array => [
+                'id' => (int) $user->ID,
+                'name' => (string) $user->display_name,
+            ], $employees),
+            'strings' => [
+                'loading' => __('Loading schedule…', 'dizzy-schedule-manager'),
+                'empty' => __('No shifts in this period.', 'dizzy-schedule-manager'),
+                'newShift' => __('Add new shift', 'dizzy-schedule-manager'),
+                'editShift' => __('Edit shift', 'dizzy-schedule-manager'),
+                'confirmDelete' => __('Delete this shift?', 'dizzy-schedule-manager'),
+                'error' => __('The schedule could not be loaded.', 'dizzy-schedule-manager'),
+            ],
+        ]);
     }
 
     public function bodyClass(string $classes): string
@@ -116,21 +144,87 @@ final class SchedulePage
             wp_die(esc_html__('You are not allowed to view the schedule.', 'dizzy-schedule-manager'));
         }
 
-        $user = wp_get_current_user();
+        $canManage = current_user_can(EmployeeRole::MANAGE_CAP);
         ?>
-        <div class="wrap dizzy-schedule-wrap">
+        <div class="wrap dizzy-schedule-wrap" id="dizzy-schedule-app">
             <header class="dizzy-schedule-header">
                 <div>
                     <h1><?php esc_html_e('Schedule', 'dizzy-schedule-manager'); ?></h1>
                     <p><?php esc_html_e('Employee shift planning', 'dizzy-schedule-manager'); ?></p>
                 </div>
-                <span class="dizzy-schedule-user"><?php echo esc_html($user->display_name); ?></span>
+                <?php if ($canManage) : ?>
+                    <button type="button" class="button button-primary" data-action="new-shift">
+                        <?php esc_html_e('Add new shift', 'dizzy-schedule-manager'); ?>
+                    </button>
+                <?php endif; ?>
             </header>
-            <main class="dizzy-schedule-empty">
-                <span class="dashicons dashicons-calendar-alt" aria-hidden="true"></span>
-                <h2><?php esc_html_e('Schedule setup completed', 'dizzy-schedule-manager'); ?></h2>
-                <p><?php esc_html_e('The Employee role and protected Schedule workspace are ready. Calendar views will be added in the next step.', 'dizzy-schedule-manager'); ?></p>
-            </main>
+
+            <nav class="dizzy-schedule-tabs" aria-label="<?php esc_attr_e('Schedule scope', 'dizzy-schedule-manager'); ?>">
+                <?php if ($canManage) : ?>
+                    <button type="button" class="is-active" data-scope="full"><?php esc_html_e('Full schedule', 'dizzy-schedule-manager'); ?></button>
+                <?php endif; ?>
+                <button type="button" <?php echo $canManage ? '' : 'class="is-active"'; ?> data-scope="mine">
+                    <?php esc_html_e('My schedule', 'dizzy-schedule-manager'); ?>
+                </button>
+            </nav>
+
+            <div class="dizzy-schedule-toolbar">
+                <button type="button" class="button" data-action="previous" aria-label="<?php esc_attr_e('Previous period', 'dizzy-schedule-manager'); ?>">‹</button>
+                <button type="button" class="button" data-action="next" aria-label="<?php esc_attr_e('Next period', 'dizzy-schedule-manager'); ?>">›</button>
+                <select data-control="view" aria-label="<?php esc_attr_e('Calendar view', 'dizzy-schedule-manager'); ?>">
+                    <option value="day"><?php esc_html_e('Day', 'dizzy-schedule-manager'); ?></option>
+                    <option value="week" selected><?php esc_html_e('Week', 'dizzy-schedule-manager'); ?></option>
+                    <option value="month"><?php esc_html_e('Month', 'dizzy-schedule-manager'); ?></option>
+                </select>
+                <strong data-period-label></strong>
+                <button type="button" class="button" data-action="today"><?php esc_html_e('Today', 'dizzy-schedule-manager'); ?></button>
+            </div>
+
+            <div class="dizzy-schedule-feedback" role="status" aria-live="polite"></div>
+            <div class="dizzy-schedule-calendar" data-calendar></div>
+
+            <?php if ($canManage) : ?>
+                <div class="dizzy-schedule-modal" data-modal hidden>
+                    <div class="dizzy-schedule-modal-backdrop" data-action="close-modal"></div>
+                    <section class="dizzy-schedule-dialog" role="dialog" aria-modal="true" aria-labelledby="dizzy-shift-title">
+                        <header>
+                            <h2 id="dizzy-shift-title"><?php esc_html_e('Add new shift', 'dizzy-schedule-manager'); ?></h2>
+                            <button type="button" class="dizzy-schedule-close" data-action="close-modal" aria-label="<?php esc_attr_e('Close', 'dizzy-schedule-manager'); ?>">×</button>
+                        </header>
+                        <form data-shift-form>
+                            <input type="hidden" name="id" value="0">
+                            <label>
+                                <span><?php esc_html_e('Employee', 'dizzy-schedule-manager'); ?></span>
+                                <select name="employee_id" required></select>
+                            </label>
+                            <label>
+                                <span><?php esc_html_e('Date', 'dizzy-schedule-manager'); ?></span>
+                                <input type="date" name="shift_date" required>
+                            </label>
+                            <div class="dizzy-schedule-form-row">
+                                <label><span><?php esc_html_e('Start', 'dizzy-schedule-manager'); ?></span><input type="time" name="start_time" step="1800" required></label>
+                                <label><span><?php esc_html_e('End', 'dizzy-schedule-manager'); ?></span><input type="time" name="end_time" step="1800" required></label>
+                            </div>
+                            <label>
+                                <span><?php esc_html_e('Break', 'dizzy-schedule-manager'); ?></span>
+                                <select name="break_minutes">
+                                    <option value="0"><?php esc_html_e('No break', 'dizzy-schedule-manager'); ?></option>
+                                    <option value="15">15 min</option><option value="30">30 min</option>
+                                    <option value="45">45 min</option><option value="60">60 min</option>
+                                </select>
+                            </label>
+                            <label><span><?php esc_html_e('Position', 'dizzy-schedule-manager'); ?></span><input type="text" name="position" maxlength="120" placeholder="<?php esc_attr_e('Bartender, Kitchen, Service…', 'dizzy-schedule-manager'); ?>"></label>
+                            <label><span><?php esc_html_e('Notes', 'dizzy-schedule-manager'); ?></span><textarea name="notes" rows="3"></textarea></label>
+                            <div class="dizzy-schedule-dialog-actions">
+                                <button type="button" class="button button-link-delete" data-action="delete-shift" hidden><?php esc_html_e('Delete', 'dizzy-schedule-manager'); ?></button>
+                                <span></span>
+                                <button type="button" class="button" data-action="close-modal"><?php esc_html_e('Cancel', 'dizzy-schedule-manager'); ?></button>
+                                <button type="submit" class="button button-primary"><?php esc_html_e('Save shift', 'dizzy-schedule-manager'); ?></button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            <?php endif; ?>
         </div>
         <?php
     }
