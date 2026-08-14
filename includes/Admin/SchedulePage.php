@@ -13,8 +13,10 @@ final class SchedulePage
     public const SLUG = 'dizzy-schedule-manager';
     private string $pageHook = '';
 
-    public function __construct(private EmployeeRole $role)
-    {
+    public function __construct(
+        private EmployeeRole $role,
+        private \Dizzy\Schedule\PositionSettings $positions
+    ) {
     }
 
     public function register(): void
@@ -213,7 +215,14 @@ final class SchedulePage
                                     <option value="45">45 min</option><option value="60">60 min</option>
                                 </select>
                             </label>
-                            <label><span><?php esc_html_e('Position', 'dizzy-schedule-manager'); ?></span><input type="text" name="position" maxlength="120" placeholder="<?php esc_attr_e('Bartender, Kitchen, Service…', 'dizzy-schedule-manager'); ?>"></label>
+                            <label>
+                                <span><?php esc_html_e('Position', 'dizzy-schedule-manager'); ?></span>
+                                <select name="position" required>
+                                    <?php foreach ($this->positions->all() as $position) : ?>
+                                        <option value="<?php echo esc_attr($position); ?>"><?php echo esc_html($position); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </label>
                             <label><span><?php esc_html_e('Notes', 'dizzy-schedule-manager'); ?></span><textarea name="notes" rows="3"></textarea></label>
                             <div class="dizzy-schedule-dialog-actions">
                                 <button type="button" class="button button-link-delete" data-action="delete-shift" hidden><?php esc_html_e('Delete', 'dizzy-schedule-manager'); ?></button>
