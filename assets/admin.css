@@ -15,7 +15,7 @@ body.dizzy-schedule-admin-page div[id*="notice"] { display:none!important; }
 .dizzy-schedule-toolbar select{min-width:100px}.dizzy-schedule-toolbar strong{margin:0 10px;color:#2271b1;font-size:17px}
 .dizzy-schedule-feedback{padding:9px 16px;color:#646970;min-height:18px}.dizzy-schedule-calendar{overflow-x:auto;background:#f6f7f7}
 .dizzy-week-grid{display:grid;grid-template-columns:180px repeat(7,minmax(130px,1fr));min-width:1090px}
-.dizzy-day-grid{display:grid;grid-template-columns:180px repeat(8,minmax(100px,1fr));min-width:980px}
+.dizzy-day-grid{display:grid;grid-template-columns:180px repeat(11,minmax(100px,1fr));min-width:1280px}
 .dizzy-month-grid{display:grid;grid-template-columns:repeat(7,minmax(145px,1fr));min-width:1015px}
 .dizzy-grid-head,.dizzy-employee-cell,.dizzy-schedule-slot,.dizzy-month-day{border-right:1px solid #dcdcde;border-bottom:1px solid #dcdcde;background:#fff}
 .dizzy-grid-head{padding:12px 8px;color:#7b8593;text-align:center;font-size:12px;font-weight:600}
