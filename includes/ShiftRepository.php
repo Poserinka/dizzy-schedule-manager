@@ -87,14 +87,11 @@ final class ShiftRepository
     private function overlaps(array $record, int $ignoreId): bool
     {
         global $wpdb;
-        $sql = 'SELECT COUNT(*) FROM ' . Database::table() . '
-            WHERE employee_id=%d AND shift_date=%s
-            AND start_time<%s AND end_time>%s';
+        $sql = 'SELECT id,start_time,end_time FROM ' . Database::table() . '
+            WHERE employee_id=%d AND shift_date=%s';
         $args = [
             (int) $record['employee_id'],
             (string) $record['shift_date'],
-            (string) $record['end_time'],
-            (string) $record['start_time'],
         ];
 
         if ($ignoreId > 0) {
@@ -102,6 +99,37 @@ final class ShiftRepository
             $args[] = $ignoreId;
         }
 
-        return (int) $wpdb->get_var($wpdb->prepare($sql, ...$args)) > 0;
+        $rows = $wpdb->get_results($wpdb->prepare($sql, ...$args), ARRAY_A) ?: [];
+        [$start, $end] = $this->minuteRange(
+            (string) $record['start_time'],
+            (string) $record['end_time']
+        );
+
+        foreach ($rows as $row) {
+            [$existingStart, $existingEnd] = $this->minuteRange(
+                (string) $row['start_time'],
+                (string) $row['end_time']
+            );
+
+            if ($start < $existingEnd && $end > $existingStart) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function minuteRange(string $start, string $end): array
+    {
+        $startParts = array_map('intval', explode(':', $start));
+        $endParts = array_map('intval', explode(':', $end));
+        $startMinutes = ($startParts[0] * 60) + $startParts[1];
+        $endMinutes = ($endParts[0] * 60) + $endParts[1];
+
+        if ($endMinutes <= $startMinutes) {
+            $endMinutes += 24 * 60;
+        }
+
+        return [$startMinutes, $endMinutes];
     }
 }
