@@ -214,7 +214,6 @@
         form.elements.shift_date.value = shift.shift_date || iso(cursor);
         form.elements.start_time.value = shift.start_time || '18:00';
         form.elements.end_time.value = shift.end_time || '02:00';
-        form.elements.break_minutes.value = shift.break_minutes || 0;
         form.elements.position.value = shift.position || form.elements.position.options[0]?.value || '';
         form.elements.notes.value = shift.notes || '';
         modal.querySelector('h2').textContent = shift.id ? config.strings.editShift : config.strings.newShift;
