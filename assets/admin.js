@@ -103,10 +103,8 @@
         for (let d = 0; d < 7; d++) grid.appendChild(cell(formatDay(addDays(start, d)), 'dizzy-grid-head'));
 
         employees.forEach(employee => {
-            const employeeCell = cell(employee.name, 'dizzy-employee-cell');
             const total = totalHours(shifts.filter(s => Number(s.employee_id) === Number(employee.id)));
-            employeeCell.insertAdjacentHTML('beforeend', '<small>' + total + ' scheduled hours</small>');
-            grid.appendChild(employeeCell);
+            grid.appendChild(employeeCell(employee, total));
             for (let d = 0; d < 7; d++) {
                 const date = iso(addDays(start, d));
                 const slot = cell('', 'dizzy-schedule-slot');
@@ -130,10 +128,11 @@
         businessHours.forEach(hour => grid.appendChild(cell(pad(hour) + ':00', 'dizzy-grid-head')));
 
         employees.forEach(employee => {
-            grid.appendChild(cell(employee.name, 'dizzy-employee-cell'));
+            const dateValue = iso(date);
+            const total = totalHours(shifts.filter(s => Number(s.employee_id) === Number(employee.id) && s.shift_date === dateValue));
+            grid.appendChild(employeeCell(employee, total));
             businessHours.forEach(hour => {
                 const slot = cell('', 'dizzy-schedule-slot');
-                const dateValue = iso(date);
                 slot.dataset.date = dateValue;
                 slot.dataset.employeeId = employee.id;
                 const matches = shifts.filter(s => Number(s.employee_id) === Number(employee.id) && s.shift_date === dateValue && Number(s.start_time.slice(0, 2)) === hour);
@@ -171,6 +170,16 @@
             date = addDays(date, 1);
         }
         calendar.appendChild(grid);
+    }
+
+    function employeeCell(employee, total) {
+        const element = document.createElement('div');
+        element.className = 'dizzy-employee-cell';
+        element.innerHTML =
+            '<img src="' + escapeHtml(employee.avatar) + '" alt="" loading="lazy">' +
+            '<span><strong>' + escapeHtml(employee.name) + '</strong><small>' +
+            escapeHtml(total) + ' hours</small></span>';
+        return element;
     }
 
     function cell(text, className) {
