@@ -11,7 +11,7 @@ Private employee schedules and shift planning for WordPress.
 - AJAX shift creation, editing and deletion without page reloads.
 - Empty calendar cells open a pre-filled Add Shift dialog.
 - Existing shifts open the Edit Shift dialog.
-- Employee, date, start/end time, break, position and notes fields.
+- Employee, date, 16:00–02:00 start/end time, position and notes fields.
 - Adds **Schedule → Settings** for adding and deleting Employee Roles (shift positions).
 - Shift Position is selected from the configured Employee Roles dropdown.
 - Overlapping shifts for the same employee are rejected.
