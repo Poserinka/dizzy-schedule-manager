@@ -19,12 +19,12 @@ body.dizzy-schedule-admin-page div[id*="notice"] { display:none!important; }
 .dizzy-month-grid{display:grid;grid-template-columns:repeat(7,minmax(145px,1fr));min-width:1015px}
 .dizzy-grid-head,.dizzy-employee-cell,.dizzy-schedule-slot,.dizzy-month-day{border-right:1px solid #dcdcde;border-bottom:1px solid #dcdcde;background:#fff}
 .dizzy-grid-head{padding:12px 8px;color:#7b8593;text-align:center;font-size:12px;font-weight:600}
-.dizzy-employee-cell{display:flex;align-items:center;gap:10px;min-height:58px;padding:7px 10px;font-weight:600}
+.dizzy-employee-cell{display:flex;align-items:center;gap:10px;min-height:46px;padding:4px 10px;font-weight:600}
 .dizzy-employee-cell img{width:36px;height:36px;flex:0 0 36px;border-radius:50%;object-fit:cover}
 .dizzy-employee-cell>span{display:flex;min-width:0;flex-direction:column;justify-content:center}
 .dizzy-employee-cell strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dizzy-employee-cell small{display:block;margin-top:2px;color:#8a939f;font-weight:400}
-.dizzy-schedule-slot{min-height:58px;padding:5px;cursor:pointer}.dizzy-schedule-slot:hover,.dizzy-month-day:hover{background:#f0f6fc}
+.dizzy-schedule-slot{min-height:46px;padding:5px;cursor:pointer}.dizzy-schedule-slot:hover,.dizzy-month-day:hover{background:#f0f6fc}
 .dizzy-month-day{min-height:132px;padding:7px;color:#75808e;cursor:pointer}.dizzy-month-day.is-outside{background:#f0f0f1;color:#a7aaad}
 .dizzy-shift{display:block;width:100%;margin:3px 0;padding:7px;border:0;border-left:4px solid #2271b1;border-radius:2px;color:#173b58;background:#dceefb;text-align:left;cursor:pointer}
 .dizzy-shift strong,.dizzy-shift span,.dizzy-shift em{display:block;font-size:11px;line-height:1.35}.dizzy-shift em{font-style:normal;font-weight:600}
